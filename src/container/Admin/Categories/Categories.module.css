@@ -43,3 +43,7 @@
 .IconMenu:hover + .MenuDropdown {
   display: flex;
 }
+
+.tableNotAvailable {
+  opacity: 0.4;
+}

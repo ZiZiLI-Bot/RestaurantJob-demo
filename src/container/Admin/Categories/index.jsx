@@ -58,7 +58,7 @@ export default function CategoriesAdmin() {
     const fetchData = async () => {
       const res = await CategoryAPI.getAllCategories();
       setCategories(res);
-      console.log(Categories);
+      console.log(res);
     };
     fetchData();
   }, []);

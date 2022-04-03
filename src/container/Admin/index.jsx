@@ -16,14 +16,18 @@ import {
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import CategoryAPI from '../../API/CategoriesAPI';
+import TableAPI from '../../API/TableAPI';
 import CategoriesAdmin from './Categories';
 import FoodsAdmin from './Foods';
+import TableAdmin from './Table';
 
 export default function AdminPage() {
   const [render, setRender] = useState(1);
   const [expanded, setExpanded] = useState('panel1');
   const [openAddCategory, setOpenAddCategory] = useState(false);
   const [addCategory, setAddCategory] = useState('');
+  const [openAddTable, setOpenAddTable] = useState(false);
+  const [addTable, setAddTable] = useState({ numberOfChair: null });
 
   const handleChange = (panel) => (isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -37,6 +41,14 @@ export default function AdminPage() {
     };
     const res = await CategoryAPI.createCategory(category);
     console.log(res);
+  };
+
+  const confirmAddTable = async () => {
+    setOpenAddTable(false);
+    if (addTable.numberOfChair !== null) {
+      const res = await TableAPI.createTable(addTable);
+      console.log(res);
+    }
   };
 
   return (
@@ -80,6 +92,23 @@ export default function AdminPage() {
               </Link>
             </AccordionDetails>
           </Accordion>
+          <Accordion
+            expanded={expanded === 'panel3'}
+            onChange={handleChange('panel3')}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls='panel2a-content'
+              onClick={() => setRender(3)}
+            >
+              <Typography>Quản lý bàn</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Button color='success' onClick={() => setOpenAddTable(true)}>
+                Thêm bàn
+              </Button>
+            </AccordionDetails>
+          </Accordion>
         </Stack>
       </Grid>
       <Grid item md={9} xs={12}>
@@ -88,6 +117,7 @@ export default function AdminPage() {
         </Typography>
         {render === 1 && <CategoriesAdmin />}
         {render === 2 && <FoodsAdmin />}
+        {render === 3 && <TableAdmin />}
       </Grid>
       {/* Dialog for add new category */}
       <Dialog open={openAddCategory} onClose={() => setOpenAddCategory(false)}>
@@ -103,6 +133,29 @@ export default function AdminPage() {
         <DialogActions>
           <Button onClick={() => setOpenAddCategory(false)}>Disagree</Button>
           <Button onClick={confirmAddCategory} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Dialog for add Table */}
+      <Dialog open={openAddTable} onClose={() => setOpenAddTable(false)}>
+        <DialogTitle>{'Thêm một bàn mới: '}</DialogTitle>
+        <DialogContent>
+          <TextField
+            label={`Số ghế của bàn này: `}
+            fullWidth
+            variant='standard'
+            onChange={(e) =>
+              setAddTable((prev) => ({
+                ...prev,
+                numberOfChair: parseInt(e.target.value),
+              }))
+            }
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenAddTable(false)}>Disagree</Button>
+          <Button onClick={confirmAddTable} autoFocus>
             Agree
           </Button>
         </DialogActions>

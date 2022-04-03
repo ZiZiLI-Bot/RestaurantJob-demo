@@ -1,3 +1,4 @@
+import MenuIcon from '@mui/icons-material/Menu';
 import {
   Button,
   Dialog,
@@ -7,7 +8,6 @@ import {
   DialogTitle,
   Grid,
   Menu,
-  MenuItem,
   Stack,
   Typography,
   useMediaQuery,
@@ -16,7 +16,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import FoodsAPI from '../../../API/FoodsAPI';
 import styles from '../Categories/Categories.module.css';
-import MenuIcon from '@mui/icons-material/Menu';
 
 export default function FoodsAdmin() {
   const [FoodsData, setFoodsData] = useState([]);

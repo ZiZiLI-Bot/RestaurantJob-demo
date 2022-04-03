@@ -138,7 +138,9 @@ export default function BookTable() {
     <Container>
       <Grid container>
         <Grid item xs={12}>
-          <Typography variant='h4'>Book a Table</Typography>
+          <p className='headtext__cormorant' variant='h4'>
+            Book a Table
+          </p>
           <LocalizationProvider dateAdapter={DateAdapter}>
             <Stack mt={3} direction='row' spacing={2}>
               <Box>
