@@ -8,7 +8,7 @@ import {
   Button,
   useMediaQuery,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateAdapter from '@mui/lab/AdapterMoment';
@@ -16,124 +16,23 @@ import { MobileTimePicker } from '@mui/lab';
 import styles from './BookTable.module.css';
 import TableBarIcon from '@mui/icons-material/TableBar';
 import DoneOutlineRoundedIcon from '@mui/icons-material/DoneOutlineRounded';
-
-const fakeData = [
-  {
-    name: 'Table 1',
-    capacity: 6,
-    isAvailable: true,
-    location: 'Bar',
-  },
-  {
-    name: 'Table 2',
-    capacity: 7,
-    isAvailable: false,
-    location: 'Bar',
-  },
-  {
-    name: 'Table 3',
-    capacity: 2,
-    isAvailable: true,
-    location: 'Patio',
-  },
-  {
-    name: 'Table 4',
-    capacity: 4,
-    isAvailable: false,
-    location: 'Inside',
-  },
-  {
-    name: 'Table 5',
-    capacity: 5,
-    isAvailable: true,
-    location: 'Patio',
-  },
-  {
-    name: 'Table 6',
-    capacity: 4,
-    isAvailable: true,
-    location: 'Bar',
-  },
-  {
-    name: 'Table 7',
-    capacity: 3,
-    isAvailable: true,
-    location: 'Bar',
-  },
-  {
-    name: 'Table 8',
-    capacity: 3,
-    isAvailable: true,
-    location: 'Patio',
-  },
-  {
-    name: 'Table 9',
-    capacity: 3,
-    isAvailable: true,
-    location: 'Inside',
-  },
-  {
-    name: 'Table 10',
-    capacity: 5,
-    isAvailable: true,
-    location: 'Bar',
-  },
-  {
-    name: 'Table 11',
-    capacity: 6,
-    isAvailable: true,
-    location: 'Bar',
-  },
-  {
-    name: 'Table 12',
-    capacity: 2,
-    isAvailable: true,
-    location: 'Inside',
-  },
-  {
-    name: 'Table 13',
-    capacity: 7,
-    isAvailable: true,
-    location: 'Inside',
-  },
-  {
-    name: 'Table 14',
-    capacity: 5,
-    isAvailable: true,
-    location: 'Inside',
-  },
-  {
-    name: 'Table 15',
-    capacity: 5,
-    isAvailable: true,
-    location: 'Patio',
-  },
-  {
-    name: 'Table 16',
-    capacity: 3,
-    isAvailable: true,
-    location: 'Patio',
-  },
-  {
-    name: 'Table 17',
-    capacity: 3,
-    isAvailable: true,
-    location: 'Bar',
-  },
-  {
-    name: 'Table 18',
-    capacity: 2,
-    isAvailable: true,
-    location: 'Inside',
-  },
-];
+import TableAPI from '../../API/TableAPI';
 
 export default function BookTable() {
   const [OrderDate, setOrderDate] = useState(new Date());
   const [OrderTime, setOrderTime] = useState('2018-01-01T00:00:00.000Z');
   const [SelectedTable, setSelectedTable] = useState([]);
+  const [table, setTable] = useState();
   const [Order, setOrder] = useState(false);
   const isMobile = useMediaQuery('(max-width:600px)');
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await TableAPI.getAllTables();
+      setTable(res);
+      console.log(res);
+    };
+    fetchData();
+  }, []);
   return (
     <Container>
       <Grid container>
@@ -170,7 +69,7 @@ export default function BookTable() {
           {Order && (
             <Stack spacing={2}>
               <Typography variant='h5'>Chọn bàn còn trống:</Typography>
-              <Box style={{ backgroundColor: '#36C7D0', borderRadius: 10 }}>
+              <Box style={{ backgroundColor: '#6FCCF5', borderRadius: 10 }}>
                 {SelectedTable[0] ? (
                   <Typography
                     variant='h5'
@@ -178,39 +77,39 @@ export default function BookTable() {
                     textAlign='center'
                     color='black'
                   >
-                    Đang chọn {SelectedTable.join(', ')}
+                    Đang chọn bàn {SelectedTable.join(', ')}
                   </Typography>
                 ) : null}
                 <Grid p={3} container>
-                  {fakeData.map((item) => (
+                  {table?.map((item) => (
                     <Box
-                      key={item.name}
+                      key={item.id}
                       m={isMobile ? 2 : 4}
                       className={
-                        item.isAvailable
+                        item.status === 0
                           ? `${styles.TableIlu}`
                           : `${styles.TableIlu} ${styles.disabled}`
                       }
                       textAlign='center'
                       onClick={() =>
                         setSelectedTable(
-                          item.isAvailable && !SelectedTable.includes(item.name)
-                            ? (preState) => [...preState, item.name]
+                          item.status === 0 && !SelectedTable.includes(item.id)
+                            ? (preState) => [...preState, item.id]
                             : (preState) => [
-                                ...preState.filter((i) => i !== item.name),
+                                ...preState.filter((i) => i !== item.id),
                               ],
                         )
                       }
                     >
-                      {SelectedTable.includes(item.name) ? (
+                      {SelectedTable.includes(item.id) ? (
                         <DoneOutlineRoundedIcon
                           className={styles.doneOutlineRounded}
                         />
                       ) : null}
-                      <Typography color='Black'>{item.name}</Typography>
+                      <Typography color='Black'>Bàn {item.id}</Typography>
                       <TableBarIcon sx={{ fontSize: 50, mt: 1 }} />
                       <Typography color='Black' variant='subtitle2'>
-                        Số Ghế: {item.capacity}
+                        Số Ghế: {item.numberOfChair}
                       </Typography>
                       <Typography
                         color='Black'

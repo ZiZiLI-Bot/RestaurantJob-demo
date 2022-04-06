@@ -13,8 +13,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import CategoryAPI from '../../API/CategoriesAPI';
 import TableAPI from '../../API/TableAPI';
 import CategoriesAdmin from './Categories';
@@ -23,11 +23,11 @@ import TableAdmin from './Table';
 
 export default function AdminPage() {
   const [render, setRender] = useState(1);
-  const [expanded, setExpanded] = useState('panel1');
+  const [expanded, setExpanded] = useState('tab1');
   const [openAddCategory, setOpenAddCategory] = useState(false);
   const [addCategory, setAddCategory] = useState('');
   const [openAddTable, setOpenAddTable] = useState(false);
-  const [addTable, setAddTable] = useState({ numberOfChair: null });
+  const [addTable, setAddTable] = useState('');
 
   const handleChange = (panel) => (isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -45,10 +45,12 @@ export default function AdminPage() {
 
   const confirmAddTable = async () => {
     setOpenAddTable(false);
-    if (addTable.numberOfChair !== null) {
-      const res = await TableAPI.createTable(addTable);
-      console.log(res);
-    }
+    const newTable = {
+      status: 0,
+      numberOfChair: addTable,
+    };
+    const res = await TableAPI.createTable(newTable);
+    console.log(res);
   };
 
   return (
@@ -58,57 +60,62 @@ export default function AdminPage() {
           <Typography textAlign='center' variant='h5' mb={2}>
             Danh mục
           </Typography>
-          <Accordion
-            expanded={expanded === 'panel1'}
-            onChange={handleChange('panel1')}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls='panel1a-content'
-              onClick={() => setRender(1)}
+          <Stack spacing={2}>
+            <Accordion
+              expanded={expanded === 'tab1'}
+              onChange={handleChange('tab1')}
             >
-              <Typography>Thể loại</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Button color='success' onClick={() => setOpenAddCategory(true)}>
-                Thêm thể loại
-              </Button>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion
-            expanded={expanded === 'panel2'}
-            onChange={handleChange('panel2')}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls='panel2a-content'
-              onClick={() => setRender(2)}
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls='panel1a-content'
+                onClick={() => setRender(1)}
+              >
+                <Typography>Thể loại</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Button
+                  color='success'
+                  onClick={() => setOpenAddCategory(true)}
+                >
+                  Thêm thể loại
+                </Button>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion
+              expanded={expanded === 'tab2'}
+              onChange={handleChange('tab2')}
             >
-              <Typography>Đồ ăn</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Link to='/admin/foods/new-food'>
-                <Button color='success'>Thêm Món</Button>
-              </Link>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion
-            expanded={expanded === 'panel3'}
-            onChange={handleChange('panel3')}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls='panel2a-content'
-              onClick={() => setRender(3)}
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls='panel2a-content'
+                onClick={() => setRender(2)}
+              >
+                <Typography>Đồ ăn</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Link to='/admin/foods/new-food'>
+                  <Button color='success'>Thêm Món</Button>
+                </Link>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion
+              expanded={expanded === 'tab3'}
+              onChange={handleChange('tab3')}
             >
-              <Typography>Quản lý bàn</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Button color='success' onClick={() => setOpenAddTable(true)}>
-                Thêm bàn
-              </Button>
-            </AccordionDetails>
-          </Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls='panel2a-content'
+                onClick={() => setRender(3)}
+              >
+                <Typography>Quản lý bàn</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Button color='success' onClick={() => setOpenAddTable(true)}>
+                  Thêm bàn
+                </Button>
+              </AccordionDetails>
+            </Accordion>
+          </Stack>
         </Stack>
       </Grid>
       <Grid item md={9} xs={12}>
@@ -145,12 +152,7 @@ export default function AdminPage() {
             label={`Số ghế của bàn này: `}
             fullWidth
             variant='standard'
-            onChange={(e) =>
-              setAddTable((prev) => ({
-                ...prev,
-                numberOfChair: parseInt(e.target.value),
-              }))
-            }
+            onChange={(e) => setAddTable(e.target.value)}
           />
         </DialogContent>
         <DialogActions>

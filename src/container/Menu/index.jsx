@@ -11,93 +11,111 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React from 'react';
-import FoodImage1 from '../../assets/FoodImage1.jpg';
-import FoodImage2 from '../../assets/FoodImage2.jpg';
-import FoodImage3 from '../../assets/FoodImage3.jpg';
-import FoodImage4 from '../../assets/FoodImage4.jpg';
-import FoodImage5 from '../../assets/FoodImage5.jpg';
-import FoodImage6 from '../../assets/FoodImage6.jpg';
+import React, { useEffect, useState } from 'react';
+import { Autoplay } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import FoodsApi from '../../API/FoodsAPI';
+import MenuHeaderImage from '../../assets/MenuHeader.jpg';
 import SubHeading from '../../components/SubHeading/SubHeading';
 import styles from './menu.module.css';
 
-const fakeData = [
-  {
-    name: 'Mì Spaghetti',
-    price: '10000',
-    discount: '10',
-    description: 'lorem ipsum dolor sit amet',
-    image: FoodImage1,
-  },
-  {
-    name: 'Bánh bò',
-    price: '10000',
-    discount: '15',
-    description: 'lorem ipsum dolor sit amet',
-    image: FoodImage2,
-  },
-  {
-    name: 'Bánh gạo',
-    price: '10000',
-    discount: '0',
-    description: 'lorem ipsum dolor sit amet',
-    image: FoodImage3,
-  },
-  {
-    name: 'Lợn luộc',
-    price: '20000',
-    discount: '0',
-    description: 'lorem ipsum dolor sit amet',
-    image: FoodImage4,
-  },
-  {
-    name: 'Gà rán',
-    price: '30000',
-    discount: '30',
-    description: 'lorem ipsum dolor sit amet',
-    image: FoodImage5,
-  },
-  {
-    name: 'Khổ qua',
-    price: '10000',
-    discount: '0',
-    description: 'lorem ipsum dolor sit amet',
-    image: FoodImage6,
-  },
-];
-
 export default function Menu() {
+  const [FoodsData, setFoodsData] = useState([]);
+  const [NumberPage, setNumberPage] = useState(0);
+  const [page, setPage] = useState(0);
   const discount = (price, discount) => {
     return (parseInt(price, 10) * (100 - parseInt(discount, 10))) / 100;
   };
+  const handleChangePage = (e, value) => {
+    setPage(value - 1);
+    window.scrollTo(0, 500);
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const params = {
+        page: page,
+        size: 6,
+      };
+      const res = await FoodsApi.getAllFoods(params);
+      const res1 = await FoodsApi.getPageFoods();
+      setFoodsData(res);
+      setNumberPage(Math.floor(res1.totalElement / 6 + 1));
+      console.log(res);
+    };
+    fetchData();
+  }, [page]);
   return (
     <>
       <Box className={styles.HeaderImage}>
-        <p className='headtext__cormorant'>Menu</p>
-        <SubHeading title='Thưởng thức các món ăn tuyệt vời!' />
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={30}
+          loop={true}
+          autoplay={{
+            delay: 2400,
+            disableOnInteraction: false,
+          }}
+          pagination={{
+            clickable: true,
+          }}
+          modules={[Autoplay]}
+        >
+          <SwiperSlide>
+            <img
+              src={MenuHeaderImage}
+              style={{ width: '100%', height: '100%' }}
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              src={MenuHeaderImage}
+              style={{ width: '100%', height: '100%' }}
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              src={MenuHeaderImage}
+              style={{ width: '100%', height: '100%' }}
+            />
+          </SwiperSlide>
+        </Swiper>
+        <Box position='absolute' className={styles.HeaderText}>
+          <p style={{ textAlign: 'center' }} className='headtext__cormorant'>
+            Menu
+          </p>
+          <SubHeading title='Thưởng thức các món ăn tuyệt vời!' />
+        </Box>
       </Box>
       <Box display='flex' justifyContent='center' alignItems='center'>
-        <p className='p__cormorant' style={{ marginTop: 30 }}>
+        <p
+          className='p__cormorant'
+          style={{ marginTop: 30, textAlign: 'center' }}
+        >
           Tất cả các món được chọn lọc và thiết kế từ nhà hàng
         </p>
       </Box>
       <Container>
         <Grid container spacing={5} mt={4}>
-          {fakeData.map((item, index) => (
-            <Grid item key={index} xs={4}>
+          {FoodsData?.map((item, index) => (
+            <Grid item key={index} md={4} sm={6} xs={12}>
               <Card
                 className={styles.CardFood}
                 sx={{ minHeight: 450, position: 'relative' }}
               >
-                {item.discount !== '0' ? (
-                  <Box className={styles.discountIcon}>{item.discount}%</Box>
+                {item.foodDetails[0]?.discount != 0 ? (
+                  <Box className={styles.discountIcon}>
+                    {item.foodDetails[0]?.discount}%
+                  </Box>
                 ) : null}
                 <CardMedia
                   className={styles.CardFoodMedia}
                   component='img'
                   height='220'
-                  image={item.image}
-                  alt='green iguana'
+                  image={item.foodDetails[0]?.foodMedias[0]?.foodUrl}
+                  alt={item.title}
                 />
                 <CardContent>
                   <p className='p__cormorant'>{item.name}</p>
@@ -107,19 +125,26 @@ export default function Menu() {
                     mt={1}
                     height={40}
                   >
-                    {item.description}
+                    {item.title}
                   </Typography>
                   <p className={`p__cormorant ${styles.price}`}>
-                    {item.discount != '0'
-                      ? discount(item.price, item.discount) + ' VND'
-                      : item.price + ' VND'}
+                    {item.foodDetails[0]?.discount != 0
+                      ? discount(
+                          item.foodDetails[0]?.amount,
+                          item.foodDetails[0]?.discount,
+                        ) + ' VND'
+                      : item.foodDetails[0]?.amount + ' VND'}
                   </p>
                   <p
                     className={`p__cormorant ${styles.discountText} ${
-                      item.discount != '0' ? styles.discountPrice : ''
+                      item.foodDetails[0]?.discount != 0
+                        ? styles.discountPrice
+                        : ''
                     }`}
                   >
-                    {item.discount != '0' ? item.price + ' VND' : ''}
+                    {item.foodDetails[0]?.discount != 0
+                      ? item.foodDetails[0]?.amount + ' VND'
+                      : ''}
                   </p>
                 </CardContent>
                 <CardActions>
@@ -137,7 +162,7 @@ export default function Menu() {
           ))}
         </Grid>
         <Stack my={4} display='flex' alignItems='center'>
-          <Pagination count={10} />
+          <Pagination count={NumberPage} onChange={handleChangePage} />
         </Stack>
       </Container>
     </>

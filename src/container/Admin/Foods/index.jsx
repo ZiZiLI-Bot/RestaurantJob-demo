@@ -1,4 +1,3 @@
-import MenuIcon from '@mui/icons-material/Menu';
 import {
   Button,
   Dialog,
@@ -7,7 +6,6 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  Menu,
   Stack,
   Typography,
   useMediaQuery,
@@ -21,17 +19,13 @@ export default function FoodsAdmin() {
   const [FoodsData, setFoodsData] = useState([]);
   const [openDLDelete, setOpenDLDelete] = useState(false);
   const [select, setSelect] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   const isMobile = useMediaQuery('(max-width:600px)');
+  const [resetData, setResetData] = useState(false);
   const confirmDeleteCategory = async () => {
-    console.log(select);
+    setOpenDLDelete(false);
+    const res = await FoodsAPI.deleteFood(select.id);
+    console.log(res);
+    setResetData(!resetData);
   };
   const handleClickOpenDelete = (item) => {
     setSelect(item);
@@ -44,53 +38,32 @@ export default function FoodsAdmin() {
       setFoodsData(res);
     };
     fetchData();
-  }, []);
+  }, [resetData]);
   return (
     <Grid container mt={1}>
       {FoodsData?.map((item, index) => (
         <Grid key={item.id} className={styles.BoxCategory} item m={1}>
-          <Typography width={isMobile ? 200 : '100%'}>
+          <Typography width={isMobile ? 230 : '100%'}>
             {index + 1}, {item.name}
           </Typography>
-          <MenuIcon
-            id='basic-button'
-            sx={{ fontSize: 36 }}
-            className={styles.IconMenu}
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup='true'
-            aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}
-          />
-          <Menu
-            id='basic-menu'
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button',
-            }}
-          >
-            <Stack m={1} spacing={1}>
+          <Stack spacing={1} direction='row' position='absolute' right='1%'>
+            <Link to={`/admin/foods/fix-food/${item.id}`}>
               <Button size='small' variant='contained'>
-                Thêm chi tiết
+                Sửa
               </Button>
-              <Link to={`/admin/foods/fix-food/${item.id}`}>
-                <Button fullWidth size='small' variant='contained'>
-                  Sửa
-                </Button>
-              </Link>
-              <Button
-                size='small'
-                variant='contained'
-                color='error'
-                onClick={() => handleClickOpenDelete(item)}
-              >
-                Xóa
-              </Button>
-            </Stack>
-          </Menu>
+            </Link>
+            <Button
+              size='small'
+              variant='contained'
+              color='error'
+              onClick={() => handleClickOpenDelete(item)}
+            >
+              Xóa
+            </Button>
+          </Stack>
         </Grid>
       ))}
+      {/* Dialog for delete food */}
       <Dialog open={openDLDelete} onClose={() => setOpenDLDelete(false)}>
         <DialogTitle>{'Xóa trường thông tin: ' + select.name}</DialogTitle>
         <DialogContent>

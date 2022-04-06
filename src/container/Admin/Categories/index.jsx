@@ -69,14 +69,16 @@ export default function CategoriesAdmin() {
           <Typography width={isMobile ? 200 : '100%'}>
             {index + 1}, {item.name}
           </Typography>
-          <Stack direction='row' spacing={3} position='absolute' right='4%'>
+          <Stack direction='row' spacing={1} position='absolute' right='1%'>
             <Button
+              size='small'
               onClick={() => handleClickOpenFix(item)}
               variant='contained'
             >
               Sửa
             </Button>
             <Button
+              size='small'
               variant='contained'
               color='error'
               onClick={() => handleClickOpenDelete(item)}

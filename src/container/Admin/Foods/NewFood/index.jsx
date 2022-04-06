@@ -2,17 +2,52 @@ import {
   Box,
   Button,
   Container,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import ImageUploading from 'react-images-uploading';
+import FoodsApi from '../../../../API/FoodsAPI';
+import CategoriesAPI from '../../../../API/CategoriesAPI';
 
 export default function NewFood() {
   const [addDetail, setAddDetail] = useState([]);
   const [updateAll, setUpdateAll] = useState(false);
+  const [getCategory, setGetCategory] = useState([]);
+  const [nameFood, setNameFood] = useState('');
+  const [titleFood, setTitleFood] = useState('');
+  const [selectCategory, setSelectCategory] = useState('');
+  const [newFoodId, setNewFoodId] = useState('');
+
+  const handleChange = (event) => {
+    setSelectCategory(event.target.value);
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await CategoriesAPI.getAllCategories();
+      setGetCategory(res);
+      setSelectCategory(res[0].id);
+    };
+    fetchData();
+  }, []);
+  const confirmAddFoods = async () => {
+    const newFood = {
+      title: titleFood,
+      name: nameFood,
+      category: {
+        id: selectCategory,
+      },
+    };
+    const res = await FoodsApi.createFood(newFood);
+    setNewFoodId(res.id);
+    setUpdateAll(true);
+  };
   return (
     <Container>
       <Grid container>
@@ -32,18 +67,52 @@ export default function NewFood() {
               sx={{ m: 3, width: 310 }}
               label='Tên món ăn:'
               variant='standard'
+              onChange={(e) => setNameFood(e.target.value)}
             />
             <TextField
               sx={{ m: 3, width: 310 }}
               label='Tiêu đề món ăn:'
               variant='standard'
+              onChange={(e) => setTitleFood(e.target.value)}
             />
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                mt: 2,
+              }}
+            >
+              <Box width={310}>
+                <FormControl fullWidth>
+                  <InputLabel id='Category'>Món này có thể loại</InputLabel>
+                  <Select
+                    labelId='Category'
+                    value={selectCategory}
+                    label='Món này có thể loại'
+                    onChange={handleChange}
+                  >
+                    {getCategory &&
+                      getCategory?.map((item) => (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </Box>
           </Box>
           <Typography variant='h5' mt={4}>
             Thêm chi tiết món ăn
           </Typography>
           {addDetail.map((item, index) => (
-            <AddDetail key={index} i={index} updateAll={updateAll} />
+            <AddDetail
+              key={index}
+              i={index}
+              newFoodId={newFoodId}
+              updateAll={updateAll}
+            />
           ))}
           <Box mt={3}>
             <Button
@@ -54,7 +123,7 @@ export default function NewFood() {
               Thêm chi tiết
             </Button>
             {addDetail[0] && (
-              <Button variant='contained' onClick={() => setUpdateAll(true)}>
+              <Button variant='contained' onClick={confirmAddFoods}>
                 Xác nhận
               </Button>
             )}
@@ -65,7 +134,7 @@ export default function NewFood() {
   );
 }
 
-const AddDetail = ({ i, updateAll }) => {
+const AddDetail = ({ i, newFoodId, updateAll }) => {
   const [size, setSize] = useState('');
   const [price, setPrice] = useState('');
   const [amount, setAmount] = useState('');
@@ -73,9 +142,29 @@ const AddDetail = ({ i, updateAll }) => {
   const [images, setImages] = useState([]);
   const maxNumber = 5;
   useEffect(() => {
-    if (updateAll) {
-      console.log('updateAll ' + i);
-    }
+    const fetchData = async () => {
+      if (updateAll && newFoodId) {
+        const newDetail = {
+          foodSize: size,
+          discount: discount,
+          amount: amount,
+          foodId: newFoodId,
+          foodMedias: [
+            {
+              foodUrl:
+                'https://images.squarespace-cdn.com/content/v1/53883795e4b016c956b8d243/1551438228969-H0FPV1FO3W5B0QL328AS/chup-anh-thuc-an-1.jpg',
+            },
+            {
+              foodUrl:
+                'https://chupanhmonan.com/wp-content/uploads/2018/10/chup-anh-mon-an-chuyen-nghiep-tu-liam-min-min.jpg',
+            },
+          ],
+        };
+        const res = await FoodsApi.createFoodDetail(newDetail);
+        console.log(res);
+      }
+    };
+    fetchData();
   }, [updateAll]);
   const onChangeImage = (imageList, addUpdateIndex) => {
     console.log(imageList, addUpdateIndex);
@@ -83,17 +172,30 @@ const AddDetail = ({ i, updateAll }) => {
   };
   return (
     <Box>
-      <TextField variant='standard' label='Size' sx={{ m: 3, width: 200 }} />
-      <TextField variant='standard' label='Giá' sx={{ m: 3, width: 200 }} />
+      <TextField
+        variant='standard'
+        label='Size'
+        sx={{ m: 3, width: 200 }}
+        onChange={(e) => setSize(e.target.value)}
+      />
+      <TextField
+        disabled
+        variant='standard'
+        label='Giá'
+        sx={{ m: 3, width: 200 }}
+        onChange={(e) => setPrice(e.target.value)}
+      />
       <TextField
         variant='standard'
         label='Số lượng'
         sx={{ m: 3, width: 200 }}
+        onChange={(e) => setAmount(e.target.value)}
       />
       <TextField
         variant='standard'
         label='Giảm giá'
         sx={{ m: 3, width: 200 }}
+        onChange={(e) => setDiscount(e.target.value)}
       />
       <ImageUploading
         multiple

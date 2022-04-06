@@ -47,3 +47,12 @@
 .tableNotAvailable {
   opacity: 0.4;
 }
+
+.MenuButton {
+  position: absolute;
+  background-color: #555;
+  border-radius: 5px;
+  right: 20px;
+  bottom: -40px;
+  z-index: 100;
+}
