@@ -17,10 +17,16 @@ import styles from './BookTable.module.css';
 import TableBarIcon from '@mui/icons-material/TableBar';
 import DoneOutlineRoundedIcon from '@mui/icons-material/DoneOutlineRounded';
 import TableAPI from '../../API/TableAPI';
+import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
+import BookTableAPI from '../../API/BookTableAPI';
 
 export default function BookTable() {
-  const [OrderDate, setOrderDate] = useState(new Date());
-  const [OrderTime, setOrderTime] = useState('2018-01-01T00:00:00.000Z');
+  const navigation = useNavigate();
+  const [OrderDate, setOrderDate] = useState(moment());
+  const [OrderTime, setOrderTime] = useState(
+    moment('2018-01-01T00:00:00.000Z'),
+  );
   const [SelectedTable, setSelectedTable] = useState([]);
   const [table, setTable] = useState();
   const [Order, setOrder] = useState(false);
@@ -33,6 +39,19 @@ export default function BookTable() {
     };
     fetchData();
   }, []);
+  const confirmBookTables = async () => {
+    const timeOrder = new Date(
+      OrderDate.format('L') + ' ' + OrderTime.format('LTS'),
+    ).getTime();
+    const dataBookTables = SelectedTable.map((table) => {
+      return {
+        tableId: table,
+        orderTime: timeOrder,
+      };
+    });
+    const res = await BookTableAPI.bookTable(dataBookTables);
+    console.log(res);
+  };
   return (
     <Container>
       <Grid container>
@@ -150,7 +169,9 @@ export default function BookTable() {
                   <Box
                     sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
                   >
-                    <Button variant='contained'>Đặt bàn</Button>
+                    <Button variant='contained' onClick={confirmBookTables}>
+                      Đặt bàn
+                    </Button>
                   </Box>
                 </>
               )}

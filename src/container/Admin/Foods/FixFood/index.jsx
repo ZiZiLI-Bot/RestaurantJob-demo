@@ -366,11 +366,9 @@ const TabPanelCustom = ({ value, item, foodId, resetData }) => {
 
   const uploadImg = async () => {
     const fromData = new FormData();
-    fromData.append('image', test[0]);
-    const upload = {
-      files: fromData,
-    };
-    console.log(upload);
+    images.forEach((image) => {
+      fromData.append('files', image.file);
+    });
     const res = await FoodsAPI.uploadImage(fromData);
     console.log(res);
   };
@@ -400,7 +398,6 @@ const TabPanelCustom = ({ value, item, foodId, resetData }) => {
       <Typography textAlign='center' variant='h5'>
         Chỉnh sửa size {size}
       </Typography>
-      <input type='file' onChange={(e) => setTest(e.target.files)} />
       <Grid container>
         <Grid
           item

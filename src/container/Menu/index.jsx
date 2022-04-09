@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Autoplay } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -40,10 +41,9 @@ export default function Menu() {
         size: 6,
       };
       const res = await FoodsApi.getAllFoods(params);
-      const res1 = await FoodsApi.getPageFoods();
       setFoodsData(res);
+      const res1 = await FoodsApi.getPageFoods();
       setNumberPage(Math.floor(res1.totalElement / 6 + 1));
-      console.log(res);
     };
     fetchData();
   }, [page]);
@@ -148,14 +148,16 @@ export default function Menu() {
                   </p>
                 </CardContent>
                 <CardActions>
-                  <Button
-                    size='small'
-                    sx={{ position: 'absolute', bottom: 10 }}
-                  >
-                    <p style={{ fontSize: '17px' }} className='p__cormorant'>
-                      Xem thêm
-                    </p>
-                  </Button>
+                  <Link to={`/menu/${item.id}`}>
+                    <Button
+                      size='small'
+                      sx={{ position: 'absolute', bottom: 10 }}
+                    >
+                      <p style={{ fontSize: '17px' }} className='p__cormorant'>
+                        Xem thêm
+                      </p>
+                    </Button>
+                  </Link>
                 </CardActions>
               </Card>
             </Grid>
