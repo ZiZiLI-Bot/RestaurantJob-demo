@@ -44,9 +44,9 @@ export default function DetailFood() {
   };
   const addFood = (e, food) => {
     if (e.target.checked) {
-      setAddFoodToTable([...addFoodToTable, food.tableId]);
+      setAddFoodToTable([...addFoodToTable, food.id]);
     } else {
-      setAddFoodToTable(addFoodToTable.filter((item) => item !== food.tableId));
+      setAddFoodToTable(addFoodToTable.filter((item) => item !== food.id));
     }
   };
   const confirmOrderFoods = async () => {
@@ -61,7 +61,7 @@ export default function DetailFood() {
       };
     });
     const res = await BookTableAPI.ordersDetails(order);
-    console.log(res);
+    console.log(order);
     setAddFoodToTable([]);
   };
   let { id } = useParams();
@@ -151,7 +151,7 @@ export default function DetailFood() {
               {FoodDetailData?.discount == 0 ? (
                 <Box display='flex' alignItems='flex-end'>
                   <p
-                    className={`p__cormorant ${styles.price}`}
+                    className={`p__cormorant ${styles?.price}`}
                     style={{ textAlign: 'left' }}
                   >
                     {FoodDetailData?.amount} VND
@@ -170,7 +170,7 @@ export default function DetailFood() {
                     {FoodDetailData?.amount} VND
                   </p>
                   <p
-                    className={`p__cormorant ${styles.price}`}
+                    className={`p__cormorant ${styles?.price}`}
                     style={{
                       textAlign: 'left',
                       transform: 'translateY(-5px)',
@@ -200,7 +200,7 @@ export default function DetailFood() {
                     onClick={() => setFoodDetailData(item)}
                   >
                     <p style={{ fontSize: 15 }} className='p__cormorant'>
-                      {item.foodSize}
+                      {item?.foodSize}
                     </p>
                     {item.discount != 0 ? (
                       <Box
@@ -213,7 +213,7 @@ export default function DetailFood() {
                           right: '0',
                         }}
                       >
-                        {item.discount}%
+                        {item?.discount}%
                       </Box>
                     ) : null}
                   </Button>
@@ -319,7 +319,7 @@ export default function DetailFood() {
           <p
             className='p__cormorant'
             style={{ lineHeight: 1.5 }}
-          >{`Thêm món ${FoodsData.name}, Size ${FoodDetailData.foodSize} vào bàn đã đặt`}</p>
+          >{`Thêm món ${FoodsData.name}, Size ${FoodDetailData?.foodSize} vào bàn đã đặt`}</p>
         </DialogTitle>
         <DialogContent>
           <Box sx={{ width: '100%' }}>
@@ -327,7 +327,7 @@ export default function DetailFood() {
               <FormControlLabel
                 key={i}
                 control={<Checkbox onChange={(e) => addFood(e, item)} />}
-                label={`Bàn ${item.tableId}`}
+                label={`Bàn ${item?.tableId}`}
               />
             ))}
           </Box>

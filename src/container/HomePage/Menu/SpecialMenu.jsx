@@ -63,9 +63,9 @@ export default function SpecialMenu() {
             cols={3}
             gap={8}
           >
-            {FoodsData?.map((item) => (
+            {FoodsData?.map((item, i) => (
               <ImageListItem
-                key={item.image}
+                key={item.id + i}
                 sx={{
                   overflow: 'hidden',
                 }}

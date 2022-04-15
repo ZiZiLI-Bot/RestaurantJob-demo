@@ -1,17 +1,19 @@
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Navbar } from './components';
-import Footer from './container/HomePage/Footer/Footer';
 import './App.css';
+import { Navbar } from './components';
 import { HomePage } from './container';
-import BookTable from './container/BookTable';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AdminPage from './container/Admin';
 import FixFoods from './container/Admin/Foods/FixFood';
 import NewFood from './container/Admin/Foods/NewFood';
+import Login from './container/Auth/Login';
+import Register from './container/Auth/Register';
+import BookTable from './container/BookTable';
+import Cart from './container/Cart';
+import Footer from './container/HomePage/Footer/Footer';
 import Menu from './container/Menu';
 import DetailFood from './container/Menu/DetailFood';
-import FoodsOrder from './container/BookTable/FoodsOrder';
 
 const MuiTheme = createTheme({
   typography: {
@@ -30,12 +32,14 @@ const App = () => (
     <Routes>
       <Route path='/' element={<HomePage />} />
       <Route path='/book-table' element={<BookTable />} />
-      <Route path='/book-table/:id' element={<FoodsOrder />} />
       <Route path='/admin' element={<AdminPage />} />
       <Route path='/admin/foods/fix-food/:id' element={<FixFoods />} />
       <Route path='/admin/foods/new-food' element={<NewFood />} />
       <Route path='/menu' element={<Menu />} />
       <Route path='/menu/:id' element={<DetailFood />} />
+      <Route path='/cart' element={<Cart />} />
+      <Route path='/login' element={<Login />} />
+      <Route path='/register' element={<Register />} />
     </Routes>
     <Footer />
   </ThemeProvider>

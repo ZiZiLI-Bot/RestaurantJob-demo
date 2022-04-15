@@ -1,12 +1,23 @@
-import React from 'react';
+import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined';
+import { Badge } from '@mui/material';
+import React, { useEffect } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdOutlineRestaurantMenu } from 'react-icons/md';
+import { Link } from 'react-router-dom';
 import images from '../../constants/images';
 import './Navbar.css';
-import { Link } from 'react-router-dom';
+import BookTableAPI from '../../API/BookTableAPI';
 
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = React.useState(false);
+  const [Cart, setCart] = React.useState();
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await BookTableAPI.getUserBookTable();
+      setCart(res);
+    };
+    fetchData();
+  }, []);
   return (
     <nav className='app__navbar'>
       <div className='app__navbar-logo'>
@@ -31,10 +42,19 @@ const Navbar = () => {
           <a href='/#contact'>Contact</a>
         </li>
       </ul>
+      <div style={{ position: 'relative', top: 4, right: 10 }}>
+        <Link to='/cart'>
+          <Badge color='secondary' badgeContent={Cart?.length}>
+            <LocalGroceryStoreOutlinedIcon
+              sx={{ color: 'white', cursor: 'pointer' }}
+            />
+          </Badge>
+        </Link>
+      </div>
       <div className='app__navbar-login'>
-        <a href='#login' className='p__opensans'>
-          Log In / Registration
-        </a>
+        <Link to='/login'>
+          <p className='p__opensans'>Log In / Registration</p>
+        </Link>
         <div />
         <Link to='/book-table' className='p__opensans'>
           Book Table

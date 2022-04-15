@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  Paper,
   Stack,
   TextField,
   Typography,
@@ -18,6 +19,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import CategoryAPI from '../../API/CategoriesAPI';
 import TableAPI from '../../API/TableAPI';
 import CategoriesAdmin from './Categories';
+import ConfirmOrder from './ConfirmOrder';
 import FoodsAdmin from './Foods';
 import TableAdmin from './Table';
 
@@ -54,77 +56,94 @@ export default function AdminPage() {
   };
 
   return (
-    <Grid container spacing={5} mt={1}>
+    <Grid container spacing={3} mt={1}>
       <Grid item md={3} xs={12}>
-        <Stack spacing={2}>
-          <Typography textAlign='center' variant='h5' mb={2}>
-            Danh mục
-          </Typography>
-          <Stack spacing={2}>
-            <Accordion
-              expanded={expanded === 'tab1'}
-              onChange={handleChange('tab1')}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls='panel1a-content'
-                onClick={() => setRender(1)}
+        <Paper variant='elevation' elevation={6}>
+          <Stack spacing={2} p={2}>
+            <Typography textAlign='center' variant='h5' mb={2}>
+              Danh mục
+            </Typography>
+            <Stack spacing={2}>
+              <Accordion
+                expanded={expanded === 'tab1'}
+                onChange={handleChange('tab1')}
               >
-                <Typography>Thể loại</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Button
-                  color='success'
-                  onClick={() => setOpenAddCategory(true)}
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls='panel1a-content'
+                  onClick={() => setRender(1)}
                 >
-                  Thêm thể loại
-                </Button>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              expanded={expanded === 'tab2'}
-              onChange={handleChange('tab2')}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls='panel2a-content'
-                onClick={() => setRender(2)}
+                  <Typography>Thể loại</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Button
+                    color='success'
+                    onClick={() => setOpenAddCategory(true)}
+                  >
+                    Thêm thể loại
+                  </Button>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={expanded === 'tab2'}
+                onChange={handleChange('tab2')}
               >
-                <Typography>Đồ ăn</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Link to='/admin/foods/new-food'>
-                  <Button color='success'>Thêm Món</Button>
-                </Link>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              expanded={expanded === 'tab3'}
-              onChange={handleChange('tab3')}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls='panel2a-content'
-                onClick={() => setRender(3)}
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls='panel2a-content'
+                  onClick={() => setRender(2)}
+                >
+                  <Typography>Đồ ăn</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Link to='/admin/foods/new-food'>
+                    <Button color='success'>Thêm Món</Button>
+                  </Link>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={expanded === 'tab3'}
+                onChange={handleChange('tab3')}
               >
-                <Typography>Quản lý bàn</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Button color='success' onClick={() => setOpenAddTable(true)}>
-                  Thêm bàn
-                </Button>
-              </AccordionDetails>
-            </Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls='panel2a-content'
+                  onClick={() => setRender(3)}
+                >
+                  <Typography>Quản lý bàn</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Button color='success' onClick={() => setOpenAddTable(true)}>
+                    Thêm bàn
+                  </Button>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={expanded === 'tab4'}
+                onChange={handleChange('tab4')}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls='panel2a-content'
+                  onClick={() => setRender(4)}
+                >
+                  <Typography>Xác nhận đơn hàng</Typography>
+                </AccordionSummary>
+              </Accordion>
+            </Stack>
           </Stack>
-        </Stack>
+        </Paper>
       </Grid>
       <Grid item md={9} xs={12}>
-        <Typography variant='h5' textAlign='center'>
-          Quản lý
-        </Typography>
-        {render === 1 && <CategoriesAdmin />}
-        {render === 2 && <FoodsAdmin />}
-        {render === 3 && <TableAdmin />}
+        <Paper elevation={24}>
+          <Typography variant='h5' pt={2} textAlign='center'>
+            Quản lý
+          </Typography>
+          {render === 1 && <CategoriesAdmin />}
+          {render === 2 && <FoodsAdmin />}
+          {render === 3 && <TableAdmin />}
+          {render === 4 && <ConfirmOrder />}
+        </Paper>
       </Grid>
       {/* Dialog for add new category */}
       <Dialog open={openAddCategory} onClose={() => setOpenAddCategory(false)}>

@@ -17,6 +17,10 @@ const BookTableAPI = {
     const url = `/api/table-orders/customer`;
     return axiosClient.get(url);
   },
+  changeStatusOrder: (id, data) => {
+    const url = `/api/order-details/${id}`;
+    return axiosClient.put(url, data);
+  },
 };
 
 export default BookTableAPI;
