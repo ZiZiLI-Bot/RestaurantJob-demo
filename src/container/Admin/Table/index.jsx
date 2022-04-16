@@ -19,19 +19,26 @@ import React, { useEffect, useState } from 'react';
 import TableAPI from '../../../API/TableAPI';
 import styles from '../Categories/Categories.module.css';
 
-
 export default function TableAdmin() {
   const isMobile = useMediaQuery('(max-width:600px)');
   const [openDLDelete, setOpenDLDelete] = useState(false);
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
+  const [openTableDetail, setOpenTableDetail] = useState(false);
   const [table, setTable] = useState([]);
   const [tableStatus, setTableStatus] = useState(0);
   const [ChairNumber, setChairNumber] = useState('');
   const [select, setSelect] = useState([]);
+  const [tableDetail, setTableDetail] = useState([]);
   const [resetData, setResetData] = useState(true);
 
   const handleChange = (event) => {
     setTableStatus(event.target.value);
+  };
+  const handleOpenTableDetail = async (item) => {
+    setOpenTableDetail(true);
+    console.log(item);
+    const res = await TableAPI.getTableDetail(item.id);
+    console.log(res);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -80,9 +87,17 @@ export default function TableAdmin() {
         >
           <Typography width={isMobile ? 200 : '100%'}>
             {index + 1}, {`Table ${item.id}`}{' '}
-            {item.status === 0 ? '' : ', Bàn không khả dụng'}
+            {item.status === 0 ? '' : ', Bàn đang được đặt'}
           </Typography>
           <Stack direction='row' spacing={1} position='absolute' right='1%'>
+            <Button
+              size='small'
+              variant='contained'
+              color='primary'
+              onClick={() => handleOpenTableDetail(item)}
+            >
+              C.tiết bàn
+            </Button>
             <Button
               size='small'
               variant='contained'
@@ -152,6 +167,15 @@ export default function TableAdmin() {
             Agree
           </Button>
         </DialogActions>
+      </Dialog>
+      {/* dialog for table detail  */}
+      <Dialog open={openTableDetail} onClose={() => setOpenTableDetail(false)}>
+        <DialogTitle>{'Bàn 1 '}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography>Bàn 1</Typography>
+          </DialogContentText>
+        </DialogContent>
       </Dialog>
     </Grid>
   );

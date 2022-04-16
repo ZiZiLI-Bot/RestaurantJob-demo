@@ -14,8 +14,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import CategoryAPI from '../../API/CategoriesAPI';
 import TableAPI from '../../API/TableAPI';
 import CategoriesAdmin from './Categories';
