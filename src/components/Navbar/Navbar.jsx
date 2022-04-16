@@ -8,10 +8,13 @@ import images from '../../constants/images';
 import './Navbar.css';
 import BookTableAPI from '../../API/BookTableAPI';
 import getAuth, { getKey } from '../../Features/getAuth';
+import { useLocation } from 'react-router-dom';
 
 const Navbar = () => {
+  const location = useLocation();
   const [toggleMenu, setToggleMenu] = React.useState(false);
   const [Cart, setCart] = React.useState();
+  const [userLogin, setUserLogin] = React.useState(getAuth());
   useEffect(() => {
     const fetchData = async () => {
       const res = await BookTableAPI.getUserBookTable();
@@ -19,6 +22,9 @@ const Navbar = () => {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    setUserLogin(getAuth());
+  }, [location]);
   return (
     <nav className='app__navbar'>
       <div className='app__navbar-logo'>
@@ -44,7 +50,7 @@ const Navbar = () => {
         </li>
       </ul>
       <div style={{ position: 'relative', top: 4, right: 10 }}>
-        {getAuth() && (
+        {userLogin && (
           <Link to='/cart'>
             <Badge color='secondary' badgeContent={Cart?.length}>
               <LocalGroceryStoreOutlinedIcon
@@ -55,7 +61,7 @@ const Navbar = () => {
         )}
       </div>
       <div className='app__navbar-login'>
-        {getAuth() ? (
+        {userLogin ? (
           <Link to='/'>
             <p className='p__opensans'>Xin chào {getKey('name')}!</p>
           </Link>
