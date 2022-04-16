@@ -79,7 +79,7 @@ export default function Cart() {
                             marginRight: 20,
                           }}
                           alt='flex'
-                          src={item.foodDetalls.foodMedias[0].foodUrl}
+                          src={item.foodDetalls.foodMedias[0]?.foodUrl}
                         />
                         <p
                           style={{ textAlign: 'center' }}
