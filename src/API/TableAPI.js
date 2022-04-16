@@ -18,7 +18,7 @@ const TableAPI = {
     return axiosClient.delete(url);
   },
   getTableDetail: (id) => {
-    const url = `/api/table-orders/${id}`;
+    const url = `/api/table-orders/table/${id}`;
     return axiosClient.get(url);
   },
 };

@@ -1,32 +1,57 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import { Link as LinkRouter } from 'react-router-dom';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
+import { Link as LinkRouter, useNavigate } from 'react-router-dom';
+import AuthAPI from '../../API/AuthAPI';
 import logo from '../../favicon.ico';
 
 export default function Login() {
   const [savePass, setSavePass] = React.useState(false);
+  const [validAPI, setValidAPI] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const handleSubmit = (event) => {
+  const [token, setToken] = React.useState('');
+  const navigation = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({
-      email: email,
+    const data = {
+      login: email,
       password: password,
-    });
+    };
+    const res = await AuthAPI.login(data);
+    if (!res.status) {
+      setValidAPI('');
+      if (savePass) {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('name', res.username);
+        localStorage.setItem('role', res.role);
+        setToken(res.token);
+      }
+      sessionStorage.setItem('token', res.token);
+      sessionStorage.setItem('name', res.username);
+      sessionStorage.setItem('role', res.role);
+      setToken(res.token);
+    } else if (res.status === 403) {
+      setValidAPI('Tài khoản hoặc mật khẩu không đúng');
+    } else {
+      setValidAPI('Lỗi hệ thống, vui lòng liên hệ quản trị viên');
+    }
+    console.log(res);
   };
-
+  React.useEffect(() => {
+    if (!!sessionStorage.getItem('token') || !!localStorage.getItem('token')) {
+      navigation('/');
+    }
+  }, [token]);
   return (
     <Box
       sx={{
@@ -88,7 +113,13 @@ export default function Login() {
             <FormControlLabel
               control={<Checkbox value='remember' color='primary' />}
               label='Nhớ mật khẩu'
+              onChange={(e) => setSavePass(e.target.checked)}
             />
+            {validAPI && (
+              <Typography variant='body2' color='error'>
+                {validAPI}
+              </Typography>
+            )}
             <Button
               type='submit'
               fullWidth

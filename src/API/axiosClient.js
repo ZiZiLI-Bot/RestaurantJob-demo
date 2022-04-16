@@ -11,9 +11,13 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use((config) => {
-  config.headers = {
-    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY0OTM0NzAxOSwiZXhwIjoxNjQ5NDMzNDE5fQ._5W0V3lnshC19HwGNxcDi3fO7V3Z2a9ZnQFlJN0-DrrKVyz12K6sspYBPW5b0YuBi6seNhuvyIn_0vUFkBvp8g`,
-  };
+  if (!!localStorage.getItem('token') || !!sessionStorage.getItem('token')) {
+    config.headers = {
+      token: `${
+        localStorage.getItem('token') || sessionStorage.getItem('token')
+      }`,
+    };
+  }
   return config;
 });
 

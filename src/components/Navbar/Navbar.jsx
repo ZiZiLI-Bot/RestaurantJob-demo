@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import images from '../../constants/images';
 import './Navbar.css';
 import BookTableAPI from '../../API/BookTableAPI';
+import getAuth, { getKey } from '../../Features/getAuth';
 
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = React.useState(false);
@@ -43,18 +44,26 @@ const Navbar = () => {
         </li>
       </ul>
       <div style={{ position: 'relative', top: 4, right: 10 }}>
-        <Link to='/cart'>
-          <Badge color='secondary' badgeContent={Cart?.length}>
-            <LocalGroceryStoreOutlinedIcon
-              sx={{ color: 'white', cursor: 'pointer' }}
-            />
-          </Badge>
-        </Link>
+        {getAuth() && (
+          <Link to='/cart'>
+            <Badge color='secondary' badgeContent={Cart?.length}>
+              <LocalGroceryStoreOutlinedIcon
+                sx={{ color: 'white', cursor: 'pointer' }}
+              />
+            </Badge>
+          </Link>
+        )}
       </div>
       <div className='app__navbar-login'>
-        <Link to='/login'>
-          <p className='p__opensans'>Log In / Registration</p>
-        </Link>
+        {getAuth() ? (
+          <Link to='/'>
+            <p className='p__opensans'>Xin chào {getKey('name')}!</p>
+          </Link>
+        ) : (
+          <Link to='/login'>
+            <p className='p__opensans'>Log In / Registration</p>
+          </Link>
+        )}
         <div />
         <Link to='/book-table' className='p__opensans'>
           Book Table
