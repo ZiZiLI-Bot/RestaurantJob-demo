@@ -1,27 +1,36 @@
 import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined';
-import { Badge } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Badge, Button, Divider, Stack, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdOutlineRestaurantMenu } from 'react-icons/md';
-import { Link } from 'react-router-dom';
-import images from '../../constants/images';
-import './Navbar.css';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import BookTableAPI from '../../API/BookTableAPI';
-import getAuth, { getKey } from '../../Features/getAuth';
-import { useLocation } from 'react-router-dom';
+import images from '../../constants/images';
+import getAuth, {
+  getKey,
+  logout as logoutFunction,
+} from '../../Features/getAuth';
+import './Navbar.css';
 
 const Navbar = () => {
+  const navigation = useNavigate();
   const location = useLocation();
   const [toggleMenu, setToggleMenu] = React.useState(false);
-  const [Cart, setCart] = React.useState();
+  const [Cart, setCart] = React.useState(0);
   const [userLogin, setUserLogin] = React.useState(getAuth());
   useEffect(() => {
     const fetchData = async () => {
       const res = await BookTableAPI.getUserBookTable();
-      setCart(res);
+      setCart(res.length);
     };
     fetchData();
-  }, []);
+  }, [userLogin]);
+  const logout = () => {
+    logoutFunction();
+    setUserLogin(getAuth());
+    navigation('/');
+  };
   useEffect(() => {
     setUserLogin(getAuth());
   }, [location]);
@@ -52,7 +61,7 @@ const Navbar = () => {
       <div style={{ position: 'relative', top: 4, right: 10 }}>
         {userLogin && (
           <Link to='/cart'>
-            <Badge color='secondary' badgeContent={Cart?.length}>
+            <Badge color='secondary' badgeContent={Cart}>
               <LocalGroceryStoreOutlinedIcon
                 sx={{ color: 'white', cursor: 'pointer' }}
               />
@@ -62,9 +71,52 @@ const Navbar = () => {
       </div>
       <div className='app__navbar-login'>
         {userLogin ? (
-          <Link to='/'>
-            <p className='p__opensans'>Xin chào {getKey('name')}!</p>
-          </Link>
+          <a className='userLogin'>
+            <p className='p__opensans' style={{ padding: '0 20px' }}>
+              Xin chào {getKey('name')}!
+            </p>
+            <Stack
+              style={{
+                width: '100%',
+                background: 'transparent',
+                padding: '0 10px',
+              }}
+              className='loginOptions'
+              spacing={1}
+            >
+              {getKey('role') === 'ROLE_ADMIN' ? (
+                <>
+                  <Link to='/admin' style={{ borderBottom: 'none' }}>
+                    <Typography mt={2} className='options' textAlign='start'>
+                      Trang quản lý
+                    </Typography>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Typography className='options' mt={1} textAlign='start'>
+                    Món ăn ưa thích
+                  </Typography>
+                  <Typography className='options' textAlign='start'>
+                    Hello
+                  </Typography>
+                  <Typography className='options' textAlign='start'>
+                    Hello
+                  </Typography>
+                </>
+              )}
+              <Divider />
+              <Button
+                onClick={logout}
+                endIcon={<LogoutIcon />}
+                variant='outlined'
+                color='error'
+                bottom={0}
+              >
+                Đăng xuất
+              </Button>
+            </Stack>
+          </a>
         ) : (
           <Link to='/login'>
             <p className='p__opensans'>Log In / Registration</p>

@@ -85,7 +85,7 @@ export default function Cart() {
                           style={{ textAlign: 'center' }}
                           className='p__cormorant'
                         >
-                          {item.foodDetalls.foodSize}
+                          {item.foodDetalls.foodName}
                         </p>
                       </Box>
                       <Divider orientation='vertical' flexItem />
@@ -126,7 +126,7 @@ export default function Cart() {
                 {foodOrder?.map((item, index) => (
                   <Box key={index}>
                     <p className='p__cormorant'>{`${index}, ${
-                      item.foodDetalls.foodSize
+                      item.foodDetalls.foodName
                     } | ${
                       item.foodDetalls.discount == 0
                         ? item.foodDetalls.amount

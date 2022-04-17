@@ -40,6 +40,11 @@ export default function Login() {
       sessionStorage.setItem('name', res.username);
       sessionStorage.setItem('role', res.role);
       setToken(res.token);
+      if (res.role === 'ROLE_ADMIN') {
+        navigation('/admin');
+      } else {
+        navigation('/');
+      }
     } else if (res.status === 403) {
       setValidAPI('Tài khoản hoặc mật khẩu không đúng');
     } else {
