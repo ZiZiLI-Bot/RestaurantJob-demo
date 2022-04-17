@@ -14,6 +14,7 @@ import Cart from './container/Cart';
 import Footer from './container/HomePage/Footer/Footer';
 import Menu from './container/Menu';
 import DetailFood from './container/Menu/DetailFood';
+import Favorite from './container/HomePage/Favorite/Favorite';
 
 const MuiTheme = createTheme({
   typography: {
@@ -37,6 +38,7 @@ const App = () => (
       <Route path='/admin/foods/new-food' element={<NewFood />} />
       <Route path='/menu' element={<Menu />} />
       <Route path='/menu/:id' element={<DetailFood />} />
+      <Route path='favorite' element={<Favorite />} />
       <Route path='/cart' element={<Cart />} />
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />

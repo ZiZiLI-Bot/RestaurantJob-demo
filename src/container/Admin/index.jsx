@@ -24,6 +24,7 @@ import ConfirmOrder from './ConfirmOrder';
 import FoodsAdmin from './Foods';
 import TableAdmin from './Table';
 import { useNavigate } from 'react-router-dom';
+import ChartAdmin from './Chart/Chart';
 
 export default function AdminPage() {
   const [render, setRender] = useState(1);
@@ -76,9 +77,20 @@ export default function AdminPage() {
                 onChange={handleChange('tab1')}
               >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
                   aria-controls='panel1a-content'
                   onClick={() => setRender(1)}
+                >
+                  <Typography>Biểu đồ doanh thu</Typography>
+                </AccordionSummary>
+              </Accordion>
+              <Accordion
+                expanded={expanded === 'tab2'}
+                onChange={handleChange('tab2')}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls='panel1a-content'
+                  onClick={() => setRender(2)}
                 >
                   <Typography>Thể loại</Typography>
                 </AccordionSummary>
@@ -92,13 +104,13 @@ export default function AdminPage() {
                 </AccordionDetails>
               </Accordion>
               <Accordion
-                expanded={expanded === 'tab2'}
-                onChange={handleChange('tab2')}
+                expanded={expanded === 'tab3'}
+                onChange={handleChange('tab3')}
               >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls='panel2a-content'
-                  onClick={() => setRender(2)}
+                  onClick={() => setRender(3)}
                 >
                   <Typography>Đồ ăn</Typography>
                 </AccordionSummary>
@@ -109,13 +121,13 @@ export default function AdminPage() {
                 </AccordionDetails>
               </Accordion>
               <Accordion
-                expanded={expanded === 'tab3'}
-                onChange={handleChange('tab3')}
+                expanded={expanded === 'tab4'}
+                onChange={handleChange('tab4')}
               >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls='panel2a-content'
-                  onClick={() => setRender(3)}
+                  onClick={() => setRender(4)}
                 >
                   <Typography>Quản lý bàn</Typography>
                 </AccordionSummary>
@@ -126,13 +138,13 @@ export default function AdminPage() {
                 </AccordionDetails>
               </Accordion>
               <Accordion
-                expanded={expanded === 'tab4'}
-                onChange={handleChange('tab4')}
+                expanded={expanded === 'tab5'}
+                onChange={handleChange('tab5')}
               >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls='panel2a-content'
-                  onClick={() => setRender(4)}
+                  onClick={() => setRender(5)}
                 >
                   <Typography>Xác nhận đơn hàng</Typography>
                 </AccordionSummary>
@@ -146,10 +158,11 @@ export default function AdminPage() {
           <Typography variant='h5' pt={2} textAlign='center'>
             Quản lý
           </Typography>
-          {render === 1 && <CategoriesAdmin />}
-          {render === 2 && <FoodsAdmin />}
-          {render === 3 && <TableAdmin />}
-          {render === 4 && <ConfirmOrder />}
+          {render === 1 && <ChartAdmin />}
+          {render === 2 && <CategoriesAdmin />}
+          {render === 3 && <FoodsAdmin />}
+          {render === 4 && <TableAdmin />}
+          {render === 5 && <ConfirmOrder />}
         </Paper>
       </Grid>
       {/* Dialog for add new category */}
