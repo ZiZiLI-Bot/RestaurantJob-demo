@@ -14,14 +14,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import CategoryAPI from '../../API/CategoriesAPI';
 import TableAPI from '../../API/TableAPI';
+import { getKey } from '../../Features/getAuth';
 import CategoriesAdmin from './Categories';
 import ConfirmOrder from './ConfirmOrder';
 import FoodsAdmin from './Foods';
 import TableAdmin from './Table';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminPage() {
   const [render, setRender] = useState(1);
@@ -31,6 +33,7 @@ export default function AdminPage() {
   const [openAddTable, setOpenAddTable] = useState(false);
   const [addTable, setAddTable] = useState('');
 
+  const navigation = useNavigate();
   const handleChange = (panel) => (isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -54,7 +57,11 @@ export default function AdminPage() {
     const res = await TableAPI.createTable(newTable);
     console.log(res);
   };
-
+  useEffect(() => {
+    if (getKey('role') !== 'ROLE_ADMIN') {
+      navigation('/');
+    }
+  }, []);
   return (
     <Grid container spacing={3} mt={1}>
       <Grid item md={3} xs={12}>

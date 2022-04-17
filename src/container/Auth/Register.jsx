@@ -8,23 +8,54 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { Link as LinkRouter } from 'react-router-dom';
+import { Link as LinkRouter, useNavigate } from 'react-router-dom';
 import logo from '../../favicon.ico';
+import AuthAPI from '../../API/AuthAPI';
 
 export default function Register() {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const handleSubmit = (event) => {
+  const [token, setToken] = React.useState('');
+  const [validAPI, setValidAPI] = React.useState('');
+  const navigation = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
+    const data = {
+      login: email,
       password: password,
-    });
+    };
+    const res = await AuthAPI.register(data);
+    console.log(res);
+    if (!res.status) {
+      setValidAPI('');
+      if (savePass) {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('name', res.username);
+        localStorage.setItem('role', res.role);
+        setToken(res.token);
+      }
+      sessionStorage.setItem('token', res.token);
+      sessionStorage.setItem('name', res.username);
+      sessionStorage.setItem('role', res.role);
+      setToken(res.token);
+      if (res.role === 'ROLE_ADMIN') {
+        navigation('/admin');
+      } else {
+        navigation('/');
+      }
+    } else if (res.status === 403) {
+      setValidAPI('Tài khoản hoặc mật khẩu không đúng');
+    } else {
+      setValidAPI('Lỗi hệ thống, vui lòng liên hệ quản trị viên');
+    }
   };
+  React.useEffect(() => {
+    if (!!sessionStorage.getItem('token') || !!localStorage.getItem('token')) {
+      navigation('/');
+    }
+  }, [token]);
 
   return (
     <Box
@@ -110,6 +141,11 @@ export default function Register() {
                 />
               </Grid>
             </Grid>
+            {validAPI && (
+              <Typography variant='body2' color='error'>
+                {validAPI}
+              </Typography>
+            )}
             <Button
               type='submit'
               fullWidth

@@ -38,6 +38,7 @@ export default function TableAdmin() {
     setOpenTableDetail(true);
     console.log(item);
     const res = await TableAPI.getTableDetail(item.id);
+    setTableDetail(res);
     console.log(res);
   };
   useEffect(() => {
@@ -170,7 +171,7 @@ export default function TableAdmin() {
       </Dialog>
       {/* dialog for table detail  */}
       <Dialog open={openTableDetail} onClose={() => setOpenTableDetail(false)}>
-        <DialogTitle>{'Bàn 1 '}</DialogTitle>
+        <DialogTitle>{`Chi tiết bàn ${tableDetail?.id}`}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <Typography>Bàn 1</Typography>

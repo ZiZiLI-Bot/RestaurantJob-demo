@@ -13,3 +13,13 @@ export function getKey(key) {
     return null;
   }
 }
+
+export function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('name');
+  localStorage.removeItem('role');
+
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('name');
+  sessionStorage.removeItem('role');
+}
