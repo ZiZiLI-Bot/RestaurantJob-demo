@@ -18,40 +18,22 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
-import FoodsApi from "../../API/FoodsAPI";
-import MenuHeaderImage from "../../assets/MenuHeader.jpg";
-import SubHeading from "../../components/SubHeading/SubHeading";
-import styles from "./menu.module.css";
+import FoodsApi from "../../../API/FoodsAPI";
+import MenuHeaderImage from '../../../assets/MenuHeader.jpg'
+import SubHeading from "../../../components/SubHeading/SubHeading";
+import styles from "./favorite.module.css";
 
-import { styled } from "@mui/material/styles";
-import Rating from "@mui/material/Rating";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
-const StyledRating = styled(Rating)({
-  "& .MuiRating-iconFilled": {
-    color: "#ff6d75",
-  },
-  "& .MuiRating-iconHover": {
-    color: "#ff3d47",
-  },
-});
-
-export default function Menu() {
+export default function Favorite() {
   const [FoodsData, setFoodsData] = useState([]);
   const [NumberPage, setNumberPage] = useState(0);
   const [page, setPage] = useState(0);
-  const [favorite, setFavorite] = useState(false);
   const discount = (price, discount) => {
     return (parseInt(price, 10) * (100 - parseInt(discount, 10))) / 100;
   };
   const handleChangePage = (e, value) => {
     setPage(value - 1);
     window.scrollTo(0, 500);
-  };
-
-  const handleFavorite = (id) => {
-    console.log(id);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -68,54 +50,7 @@ export default function Menu() {
   }, [page]);
   return (
     <>
-      <Box className={styles.HeaderImage}>
-        <Swiper
-          slidesPerView={1}
-          spaceBetween={30}
-          loop={true}
-          autoplay={{
-            delay: 2400,
-            disableOnInteraction: false,
-          }}
-          pagination={{
-            clickable: true,
-          }}
-          modules={[Autoplay]}
-        >
-          <SwiperSlide>
-            <img
-              src={MenuHeaderImage}
-              style={{ width: "100%", height: "100%" }}
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img
-              src={MenuHeaderImage}
-              style={{ width: "100%", height: "100%" }}
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img
-              src={MenuHeaderImage}
-              style={{ width: "100%", height: "100%" }}
-            />
-          </SwiperSlide>
-        </Swiper>
-        <Box position="absolute" className={styles.HeaderText}>
-          <p style={{ textAlign: "center" }} className="headtext__cormorant">
-            Menu
-          </p>
-          <SubHeading title="Thưởng thức các món ăn tuyệt vời!" />
-        </Box>
-      </Box>
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <p
-          className="p__cormorant"
-          style={{ marginTop: 30, textAlign: "center" }}
-        >
-          Tất cả các món được chọn lọc và thiết kế từ nhà hàng
-        </p>
-      </Box>
+      <Typography variant="h4" mt={6} mb={-6} textAlign={'center'}>Món ăn của tôi</Typography>
       <Container>
         <Grid container spacing={5} mt={4}>
           {FoodsData?.map((item, index) => (
@@ -166,29 +101,6 @@ export default function Menu() {
                       : ""}
                   </p>
                 </CardContent>
-                <CardActions
-                  sx={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <Link to={`/menu/${item.id}`}>
-                    <Button
-                      size="small"
-                      sx={{ position: "absolute", bottom: 10 }}
-                    >
-                      <p style={{ fontSize: "17px" }} className="p__cormorant">
-                        Xem thêm
-                      </p>
-                    </Button>
-                  </Link>
-                  <Button onClick={()=>handleFavorite(item.id)}>
-                    <StyledRating
-                      max={1}
-                      defaultValue={0}
-                      precision={1}
-                      icon={<FavoriteIcon fontSize="inherit" />}
-                      emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
-                    />
-                  </Button>
-                </CardActions>
               </Card>
             </Grid>
           ))}
