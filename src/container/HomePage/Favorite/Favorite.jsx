@@ -41,8 +41,9 @@ export default function Favorite() {
         page: page,
         size: 6,
       };
-      const res = await FoodsApi.getAllFoods(params);
-      setFoodsData(res);
+      const res = await FoodsApi.getAllFavouriteFood(params);
+      // setFoodsData(res);
+      console.log(res.favouriteFood);
       const res1 = await FoodsApi.getPageFoods();
       setNumberPage(Math.floor(res1.totalElement / 6 + 1));
     };

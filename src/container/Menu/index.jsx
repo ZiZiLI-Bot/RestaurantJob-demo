@@ -50,8 +50,8 @@ export default function Menu() {
     window.scrollTo(0, 500);
   };
 
-  const handleFavorite = (id) => {
-    console.log(id);
+  const handleFavorite = (item) => {
+    console.log(item.foodDetails[0].id);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -179,7 +179,7 @@ export default function Menu() {
                       </p>
                     </Button>
                   </Link>
-                  <Button onClick={()=>handleFavorite(item.id)}>
+                  <Button onClick={()=>handleFavorite(item)}>
                     <StyledRating
                       max={1}
                       defaultValue={0}
