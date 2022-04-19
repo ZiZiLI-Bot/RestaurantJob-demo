@@ -2,7 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 
 const axiosClient = axios.create({
-  baseURL: 'http://duyndph12801.cf:8787',
+  baseURL: 'http://101.99.6.31:8787',
   headers: {
     'content-type': 'application/json',
   },

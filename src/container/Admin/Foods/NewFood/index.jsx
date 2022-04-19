@@ -143,6 +143,8 @@ const AddDetail = ({ i, newFoodId, updateAll }) => {
   const maxNumber = 5;
   useEffect(() => {
     const fetchData = async () => {
+      
+
       if (updateAll && newFoodId) {
         const newDetail = {
           foodSize: size,

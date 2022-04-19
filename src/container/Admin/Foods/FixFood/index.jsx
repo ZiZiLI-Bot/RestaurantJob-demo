@@ -37,8 +37,8 @@ export default function FixFoods() {
   const [images, setImages] = useState([]);
   const [select, setSelect] = useState([]);
   const [open, setOpen] = useState(false);
-  let { id } = useParams();
   const [value, setValue] = useState('0');
+  let { id } = useParams();
   const [openDLAddDetail, setOpenDLAddDetail] = useState(false);
   const maxNumber = 5;
 
@@ -53,24 +53,21 @@ export default function FixFoods() {
   };
   const confirmAddDetail = async () => {
     setOpenDLAddDetail(false);
+    const formData = new FormData();
+    images.map((image) => {
+      formData.append('files', image.file);
+    });
+    const res = await FoodsAPI.uploadImage(formData);
+    const foodMedias = res.map((image) => ({ foodUrl: image }));
     const detail = {
       foodSize: size,
       discount: discount,
       amount: amount,
       foodId: select.id,
-      foodMedias: [
-        {
-          foodUrl:
-            'https://images.squarespace-cdn.com/content/v1/53883795e4b016c956b8d243/1551438228969-H0FPV1FO3W5B0QL328AS/chup-anh-thuc-an-1.jpg',
-        },
-        {
-          foodUrl:
-            'https://chupanhmonan.com/wp-content/uploads/2018/10/chup-anh-mon-an-chuyen-nghiep-tu-liam-min-min.jpg',
-        },
-      ],
+      foodMedias: foodMedias,
     };
-    const res = await FoodsAPI.createFoodDetail(detail);
-    console.log(res);
+    const res1 = await FoodsAPI.createFoodDetail(detail);
+    console.log(res1);
     handleResetData();
   };
 
@@ -238,12 +235,12 @@ export default function FixFoods() {
                 onChange={(e) => setSize(e.target.value)}
               />
               <TextField
-                label='Giảm giá'
+                label='Giá'
                 variant='standard'
                 onChange={(e) => setAmount(e.target.value)}
               />
               <TextField
-                label='Số lượng'
+                label='Giảm giá'
                 variant='standard'
                 onChange={(e) => setDiscount(e.target.value)}
               />
@@ -339,18 +336,20 @@ export default function FixFoods() {
 
 const TabPanelCustom = ({ value, item, foodId, resetData }) => {
   const [images, setImages] = useState([]);
+  const [checkImg, setCheckImg] = useState(false);
   const [size, setSize] = useState(item.foodSize);
   const [price, setPrice] = useState('');
   const [amount, setAmount] = useState(item.amount);
-  const [imagePre, setImagePre] = useState(item.foodMedias);
+  const [imagePre, setImagePre] = useState([]);
   const [discount, setDiscount] = useState(item.discount);
   const [openDLDelete, setOpenDLDelete] = useState(false);
   const [select, setSelect] = useState([]);
-  const [test, setTest] = useState([]);
+  const arrImage = [];
 
   const maxNumber = 5;
   const onChangeImage = (imageList, addUpdateIndex) => {
     setImages(imageList);
+    setCheckImg(true);
     console.log(imageList);
   };
   const handleOpenDLDelete = (item) => {
@@ -363,36 +362,36 @@ const TabPanelCustom = ({ value, item, foodId, resetData }) => {
     console.log(res);
     resetData();
   };
-
-  const uploadImg = async () => {
-    const fromData = new FormData();
-    images.forEach((image) => {
-      fromData.append('files', image.file);
-    });
-    const res = await FoodsAPI.uploadImage(fromData);
-    console.log(res);
+  const deleteImage = (url) => {
+    setImagePre(imagePre.filter((item) => item !== url));
   };
   const confirmUpdateFoodDetail = async () => {
-    const foodDetail = {
+    if (checkImg) {
+      const fromData = new FormData();
+      images?.forEach((image) => {
+        fromData.append('files', image.file);
+      });
+      const res = await FoodsAPI.uploadImage(fromData);
+      res?.map((image) => arrImage.push(image));
+    }
+    imagePre.map((image) => arrImage.push(image));
+    const foodMedias = arrImage.map((image) => ({ foodUrl: image }));
+    const data = {
       foodSize: size,
       amount: amount,
       discount: discount,
       foodId: foodId,
-      foodMedias: [
-        {
-          foodUrl:
-            'https://images.squarespace-cdn.com/content/v1/53883795e4b016c956b8d243/1551438228969-H0FPV1FO3W5B0QL328AS/chup-anh-thuc-an-1.jpg',
-        },
-        {
-          foodUrl:
-            'https://chupanhmonan.com/wp-content/uploads/2018/10/chup-anh-mon-an-chuyen-nghiep-tu-liam-min-min.jpg',
-        },
-      ],
+      foodMedias: foodMedias,
     };
-    const res = await FoodsAPI.updateFoodDetails(item.id, foodDetail);
-    console.log(res);
+    const res1 = await FoodsAPI.updateFoodDetails(item.id, data);
+    console.log(res1);
     resetData();
   };
+  useEffect(() => {
+    item.foodMedias.map((image) => {
+      setImagePre((pre) => [...pre, image.foodUrl]);
+    });
+  }, []);
   return (
     <TabPanel value={value}>
       <Typography textAlign='center' variant='h5'>
@@ -416,12 +415,13 @@ const TabPanelCustom = ({ value, item, foodId, resetData }) => {
           >
             {imagePre?.map((item, index) => (
               <Box position='relative' key={index}>
-                <img style={{ width: 150, height: 150 }} src={item?.foodUrl} />
+                <img style={{ width: 150, height: 150 }} src={item} />
                 <Button
                   sx={{ position: 'absolute', bottom: 0, left: '34%' }}
                   color='error'
                   variant='outlined'
                   size='small'
+                  onClick={() => deleteImage(item)}
                 >
                   Xóa
                 </Button>
@@ -557,7 +557,6 @@ const TabPanelCustom = ({ value, item, foodId, resetData }) => {
         <Button variant='contained' onClick={confirmUpdateFoodDetail}>
           Xác nhận
         </Button>
-        <Button onClick={uploadImg}>Test Upload</Button>
       </Stack>
       {/* Dialog confirm deleteFoodDetail */}
       <Dialog open={openDLDelete} onClose={() => setOpenDLDelete(false)}>
