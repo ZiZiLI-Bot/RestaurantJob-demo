@@ -45,10 +45,10 @@ const FoodsApi = {
       },
     });
   },
-  getAllFavouriteFood : (params) =>{
-    const url = "/api/customers/favourite-food"
-    return axiosClient.get(url,{params})
-  }
+  getAllFavouriteFood: (params) => {
+    const url = '/api/customers/favourite-food';
+    return axiosClient.get(url, { params });
+  },
 };
 
 export default FoodsApi;

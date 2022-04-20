@@ -143,7 +143,12 @@ const AddDetail = ({ i, newFoodId, updateAll }) => {
   const maxNumber = 5;
   useEffect(() => {
     const fetchData = async () => {
-      
+      const formData = new FormData();
+      images.map((image) => formData.append('files', image));
+      const res = await FoodsApi.uploadImage(formData);
+      const foodMedias = res.map((item) => ({
+        foodUrl: item,
+      }));
 
       if (updateAll && newFoodId) {
         const newDetail = {
@@ -151,19 +156,10 @@ const AddDetail = ({ i, newFoodId, updateAll }) => {
           discount: discount,
           amount: amount,
           foodId: newFoodId,
-          foodMedias: [
-            {
-              foodUrl:
-                'https://images.squarespace-cdn.com/content/v1/53883795e4b016c956b8d243/1551438228969-H0FPV1FO3W5B0QL328AS/chup-anh-thuc-an-1.jpg',
-            },
-            {
-              foodUrl:
-                'https://chupanhmonan.com/wp-content/uploads/2018/10/chup-anh-mon-an-chuyen-nghiep-tu-liam-min-min.jpg',
-            },
-          ],
+          foodMedias: foodMedias,
         };
-        const res = await FoodsApi.createFoodDetail(newDetail);
-        console.log(res);
+        // const res = await FoodsApi.createFoodDetail(newDetail);
+        console.log(newDetail);
       }
     };
     fetchData();
