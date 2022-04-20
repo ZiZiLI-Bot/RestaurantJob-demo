@@ -50,8 +50,16 @@ export default function Menu() {
     window.scrollTo(0, 500);
   };
 
-  const handleFavorite = (item) => {
-    console.log(item.foodDetails[0].id);
+  const handleFavorite = async (item) => {
+    const  data = {foodDetailId:String(item.foodDetails[0].id) }
+    try{
+      const res = await FoodsApi.addNewFavouriteFood(data);
+      if(res){
+        console.log('them thanh cong');
+      }
+    }catch(err){
+      console.log(err);
+    }
   };
   useEffect(() => {
     const fetchData = async () => {
