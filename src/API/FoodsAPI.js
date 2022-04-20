@@ -45,18 +45,18 @@ const FoodsApi = {
       },
     });
   },
-  getAllFavouriteFood : (params) =>{
-    const url = "/api/customers/favourite-food"
-    return axiosClient.get(url,{params})
+  getAllFavouriteFood: (params) => {
+    const url = '/api/customers/favourite-food';
+    return axiosClient.get(url, { params });
   },
-  addNewFavouriteFood: (data) =>{
-    const url = '/api/customers/favourite-food'
-    return axiosClient.post(url, data)
+  addNewFavouriteFood: (data) => {
+    const url = '/api/customers/favourite-food';
+    return axiosClient.post(url, data);
   },
-  deleteFavouriteFood: (data) =>{
-    const url = '/api/customers/favourite-food'
-    return axiosClient.delete(url, data)
-  }
+  deleteFavoriteFood: (data) => {
+    const url = '/api/customers/favourite-food';
+    return axiosClient.delete(url, data);
+  },
 };
 
 export default FoodsApi;
