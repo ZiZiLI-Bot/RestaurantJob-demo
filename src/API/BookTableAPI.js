@@ -21,6 +21,14 @@ const BookTableAPI = {
     const url = `/api/order-details/${id}`;
     return axiosClient.put(url, data);
   },
+  getTotalByWeek: (month, year)=>{
+    const url = `/api/revenue?week=1&month=${month}&year=${year}`
+    return axiosClient.get(url)
+  },
+  getTotalByYear: (year)=>{
+    const url = `/api/revenue?year=${year}`
+    return axiosClient.get(url)
+  }
 };
 
 export default BookTableAPI;

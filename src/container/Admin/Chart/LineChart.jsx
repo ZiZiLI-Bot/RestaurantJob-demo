@@ -26,22 +26,20 @@ const options = {
 };
 
 const labels = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7','Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
-let index = -1;
-const data = {
+
+function LineChart({dataByYear}){
+  const data = {
   labels,
   datasets: [
     {
-      data: labels.map(() =>{
-        index++;
-        return fakeData[index];
+      data: dataByYear.map((data)=>{
+        return data.total
       }),
       borderColor: 'rgb(255, 99, 132)',
       backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-  ],
+    }
+  ]
 };
-
-function LineChart(){
   return(
     <Line options={options} data={data}/>
   )

@@ -23,21 +23,19 @@ const options = {
 };
 
 const labels = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Thứ 8"];
-let index = -1;
-const data = {
+
+function BarChart({dataByWeek}){
+  const data = {
   labels,
   datasets: [
     {
-      data: labels.map(() =>{
-        index++;
-        return fakeData[index];
+      data: dataByWeek.map((data)=>{
+        return data.total
       }),
       backgroundColor: "rgba(255, 99, 132, 0.5)"
     }
   ]
 };
-
-function BarChart(){
   return(
     <Bar options={options} data ={data}/>
   )
