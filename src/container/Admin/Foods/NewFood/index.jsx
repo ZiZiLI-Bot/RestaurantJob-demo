@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import ImageUploading from 'react-images-uploading';
 import FoodsApi from '../../../../API/FoodsAPI';
 import CategoriesAPI from '../../../../API/CategoriesAPI';
+import { useNavigate } from 'react-router-dom';
 
 export default function NewFood() {
   const [addDetail, setAddDetail] = useState([]);
@@ -135,6 +136,7 @@ export default function NewFood() {
 }
 
 const AddDetail = ({ i, newFoodId, updateAll }) => {
+  const navigation = useNavigate();
   const [size, setSize] = useState('');
   const [price, setPrice] = useState('');
   const [amount, setAmount] = useState('');
@@ -143,14 +145,15 @@ const AddDetail = ({ i, newFoodId, updateAll }) => {
   const maxNumber = 5;
   useEffect(() => {
     const fetchData = async () => {
-      const formData = new FormData();
-      images.map((image) => formData.append('files', image));
-      const res = await FoodsApi.uploadImage(formData);
-      const foodMedias = res.map((item) => ({
-        foodUrl: item,
-      }));
-
       if (updateAll && newFoodId) {
+        const formData = new FormData();
+        images.map((image) => {
+          formData.append('files', image.file);
+        });
+        const res = await FoodsApi.uploadImage(formData);
+        const foodMedias = res.map((item) => ({
+          foodUrl: item,
+        }));
         const newDetail = {
           foodSize: size,
           discount: discount,
@@ -158,8 +161,8 @@ const AddDetail = ({ i, newFoodId, updateAll }) => {
           foodId: newFoodId,
           foodMedias: foodMedias,
         };
-        // const res = await FoodsApi.createFoodDetail(newDetail);
-        console.log(newDetail);
+        const res1 = await FoodsApi.createFoodDetail(newDetail);
+        navigation('/admin');
       }
     };
     fetchData();
