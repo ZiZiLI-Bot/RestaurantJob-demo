@@ -42,6 +42,8 @@
   background-color: transition;
   padding: 8px;
   border-radius: 6px;
+  border-bottom: none !important;
+  margin: 0 !important;
 }
 .options:hover {
   background-color: rgba(125, 125, 125, 0.279);
