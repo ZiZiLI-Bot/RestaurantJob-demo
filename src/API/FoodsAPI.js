@@ -49,6 +49,14 @@ const FoodsApi = {
     const url = '/api/customers/favourite-food';
     return axiosClient.get(url, { params });
   },
+  addNewFavouriteFood: (data) => {
+    const url = '/api/customers/favourite-food';
+    return axiosClient.post(url, data);
+  },
+  deleteFavoriteFood: (data) => {
+    const url = '/api/customers/favourite-food';
+    return axiosClient.delete(url, data);
+  },
 };
 
 export default FoodsApi;

@@ -10,30 +10,30 @@ import {
   Pagination,
   Stack,
   Typography,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Autoplay } from "swiper";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Swiper, SwiperSlide } from "swiper/react";
-import FoodsApi from "../../API/FoodsAPI";
-import MenuHeaderImage from "../../assets/MenuHeader.jpg";
-import SubHeading from "../../components/SubHeading/SubHeading";
-import styles from "./menu.module.css";
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Autoplay } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import FoodsApi from '../../API/FoodsAPI';
+import MenuHeaderImage from '../../assets/MenuHeader.jpg';
+import SubHeading from '../../components/SubHeading/SubHeading';
+import styles from './menu.module.css';
 
-import { styled } from "@mui/material/styles";
-import Rating from "@mui/material/Rating";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { styled } from '@mui/material/styles';
+import Rating from '@mui/material/Rating';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 const StyledRating = styled(Rating)({
-  "& .MuiRating-iconFilled": {
-    color: "#ff6d75",
+  '& .MuiRating-iconFilled': {
+    color: '#ff6d75',
   },
-  "& .MuiRating-iconHover": {
-    color: "#ff3d47",
+  '& .MuiRating-iconHover': {
+    color: '#ff3d47',
   },
 });
 
@@ -50,8 +50,16 @@ export default function Menu() {
     window.scrollTo(0, 500);
   };
 
-  const handleFavorite = (item) => {
-    console.log(item.foodDetails[0].id);
+  const handleFavorite = async (item) => {
+    const data = { foodDetailId: String(item.foodDetails[0].id) };
+    try {
+      const res = await FoodsApi.addNewFavouriteFood(data);
+      if (res) {
+        console.log('them thanh cong');
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -85,33 +93,33 @@ export default function Menu() {
           <SwiperSlide>
             <img
               src={MenuHeaderImage}
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: '100%', height: '100%' }}
             />
           </SwiperSlide>
           <SwiperSlide>
             <img
               src={MenuHeaderImage}
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: '100%', height: '100%' }}
             />
           </SwiperSlide>
           <SwiperSlide>
             <img
               src={MenuHeaderImage}
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: '100%', height: '100%' }}
             />
           </SwiperSlide>
         </Swiper>
-        <Box position="absolute" className={styles.HeaderText}>
-          <p style={{ textAlign: "center" }} className="headtext__cormorant">
+        <Box position='absolute' className={styles.HeaderText}>
+          <p style={{ textAlign: 'center' }} className='headtext__cormorant'>
             Menu
           </p>
-          <SubHeading title="Thưởng thức các món ăn tuyệt vời!" />
+          <SubHeading title='Thưởng thức các món ăn tuyệt vời!' />
         </Box>
       </Box>
-      <Box display="flex" justifyContent="center" alignItems="center">
+      <Box display='flex' justifyContent='center' alignItems='center'>
         <p
-          className="p__cormorant"
-          style={{ marginTop: 30, textAlign: "center" }}
+          className='p__cormorant'
+          style={{ marginTop: 30, textAlign: 'center' }}
         >
           Tất cả các món được chọn lọc và thiết kế từ nhà hàng
         </p>
@@ -122,7 +130,7 @@ export default function Menu() {
             <Grid item key={index} md={4} sm={6} xs={12}>
               <Card
                 className={styles.CardFood}
-                sx={{ minHeight: 450, position: "relative" }}
+                sx={{ minHeight: 450, position: 'relative' }}
               >
                 {item.foodDetails[0]?.discount != 0 ? (
                   <Box className={styles.discountIcon}>
@@ -131,16 +139,16 @@ export default function Menu() {
                 ) : null}
                 <CardMedia
                   className={styles.CardFoodMedia}
-                  component="img"
-                  height="220"
+                  component='img'
+                  height='220'
                   image={item.foodDetails[0]?.foodMedias[0]?.foodUrl}
                   alt={item.title}
                 />
                 <CardContent>
-                  <p className="p__cormorant">{item.name}</p>
+                  <p className='p__cormorant'>{item.name}</p>
                   <Typography
-                    variant="body1"
-                    color="text.secondary"
+                    variant='body1'
+                    color='text.secondary'
                     mt={1}
                     height={40}
                   >
@@ -150,42 +158,42 @@ export default function Menu() {
                     {item.foodDetails[0]?.discount != 0
                       ? discount(
                           item.foodDetails[0]?.amount,
-                          item.foodDetails[0]?.discount
-                        ) + " VND"
-                      : item.foodDetails[0]?.amount + " VND"}
+                          item.foodDetails[0]?.discount,
+                        ) + ' VND'
+                      : item.foodDetails[0]?.amount + ' VND'}
                   </p>
                   <p
                     className={`p__cormorant ${styles.discountText} ${
                       item.foodDetails[0]?.discount != 0
                         ? styles.discountPrice
-                        : ""
+                        : ''
                     }`}
                   >
                     {item.foodDetails[0]?.discount != 0
-                      ? item.foodDetails[0]?.amount + " VND"
-                      : ""}
+                      ? item.foodDetails[0]?.amount + ' VND'
+                      : ''}
                   </p>
                 </CardContent>
                 <CardActions
-                  sx={{ display: "flex", justifyContent: "space-between" }}
+                  sx={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                   <Link to={`/menu/${item.id}`}>
                     <Button
-                      size="small"
-                      sx={{ position: "absolute", bottom: 10 }}
+                      size='small'
+                      sx={{ position: 'absolute', bottom: 10 }}
                     >
-                      <p style={{ fontSize: "17px" }} className="p__cormorant">
+                      <p style={{ fontSize: '17px' }} className='p__cormorant'>
                         Xem thêm
                       </p>
                     </Button>
                   </Link>
-                  <Button onClick={()=>handleFavorite(item)}>
+                  <Button onClick={() => handleFavorite(item)}>
                     <StyledRating
                       max={1}
                       defaultValue={0}
                       precision={1}
-                      icon={<FavoriteIcon fontSize="inherit" />}
-                      emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
+                      icon={<FavoriteIcon fontSize='inherit' />}
+                      emptyIcon={<FavoriteBorderIcon fontSize='inherit' />}
                     />
                   </Button>
                 </CardActions>
@@ -193,7 +201,7 @@ export default function Menu() {
             </Grid>
           ))}
         </Grid>
-        <Stack my={4} display="flex" alignItems="center">
+        <Stack my={4} display='flex' alignItems='center'>
           <Pagination count={NumberPage} onChange={handleChangePage} />
         </Stack>
       </Container>
