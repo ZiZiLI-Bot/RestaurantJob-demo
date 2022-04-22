@@ -85,12 +85,6 @@ const Navbar = () => {
               className='loginOptions'
               spacing={2}
             >
-              <Link to='/favorite' className='options'>
-                <Typography textAlign='start'>Món ăn ưa thích</Typography>
-              </Link>
-              <Link to='/user-settings' className='options'>
-                <Typography textAlign='start'>Thông tin cá nhân</Typography>
-              </Link>
               {getKey('role') === 'ROLE_ADMIN' ? (
                 <>
                   <Link to='/admin' className='options'>
@@ -109,6 +103,12 @@ const Navbar = () => {
                   </Typography>
                 </>
               )}
+              <Link to='/favorite' className='options'>
+                <Typography textAlign='start'>Món ăn ưa thích</Typography>
+              </Link>
+              <Link to='/user-settings' className='options'>
+                <Typography textAlign='start'>Thông tin cá nhân</Typography>
+              </Link>
               <Divider />
               <Button
                 onClick={logout}
