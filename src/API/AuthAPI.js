@@ -9,6 +9,16 @@ const AuthAPI = {
     const url = '/service/register';
     return axiosClient.post(url, user);
   },
+  UpdateCustomer: (user) => {
+    const url = '/api/customers';
+    return axiosClient.put(url, user);
+  },
+  CreateCustomer: (user, token) => {
+    const url = '/api/customers';
+    return axiosClient.post(url, user, {
+      token: token,
+    });
+  },
 };
 
 export default AuthAPI;

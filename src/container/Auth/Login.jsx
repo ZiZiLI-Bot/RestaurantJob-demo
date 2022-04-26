@@ -1,3 +1,11 @@
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import {
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -20,6 +28,7 @@ export default function Login() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [token, setToken] = React.useState('');
+  const [hidePass, setHidePass] = React.useState(false);
   const navigation = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -104,17 +113,28 @@ export default function Login() {
               autoComplete='email'
               autoFocus
             />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              name='Mật khẩu'
-              label='Mật khẩu'
-              type='password'
-              id='password'
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete='current-password'
-            />
+            <FormControl sx={{ mt: 1, width: '100%' }} variant='outlined'>
+              <InputLabel htmlFor='outlined-adornment-password'>
+                Mật khẩu
+              </InputLabel>
+              <OutlinedInput
+                id='outlined-adornment-password'
+                type={hidePass ? 'text' : 'password'}
+                onChange={(e) => setPassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position='end'>
+                    <IconButton
+                      onClick={() => setHidePass(!hidePass)}
+                      edge='end'
+                    >
+                      {hidePass ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label='Mat Khau'
+              />
+            </FormControl>
+            <br />
             <FormControlLabel
               control={<Checkbox value='remember' color='primary' />}
               label='Nhớ mật khẩu'

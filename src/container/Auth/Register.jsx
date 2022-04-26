@@ -1,3 +1,13 @@
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import {
+  Alert,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Slide,
+} from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -9,16 +19,26 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Link as LinkRouter, useNavigate } from 'react-router-dom';
-import logo from '../../favicon.ico';
 import AuthAPI from '../../API/AuthAPI';
+import logo from '../../favicon.ico';
 
 export default function Register() {
-  const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [phoneNumber, setPhoneNumber] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [token, setToken] = React.useState('');
   const [validAPI, setValidAPI] = React.useState('');
+  const [hidePass, setHidePass] = React.useState(false);
+  const [alert, setAlert] = React.useState(false);
+
+  const openAlert = () => {
+    setAlert(true);
+    setTimeout(() => {
+      setAlert(false);
+    }, 3000);
+  };
+
   const navigation = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,23 +50,17 @@ export default function Register() {
     console.log(res);
     if (!res.status) {
       setValidAPI('');
-      if (savePass) {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('name', res.username);
-        localStorage.setItem('role', res.role);
-        setToken(res.token);
-      }
-      sessionStorage.setItem('token', res.token);
-      sessionStorage.setItem('name', res.username);
-      sessionStorage.setItem('role', res.role);
       setToken(res.token);
-      if (res.role === 'ROLE_ADMIN') {
-        navigation('/admin');
-      } else {
-        navigation('/');
-      }
+      const data1 = {
+        name: lastName,
+        email: email,
+        phoneNumber: phoneNumber,
+      };
+      const res1 = await AuthAPI.CreateCustomer(data1, res.token);
+      console.log(res1);
+      openAlert();
     } else if (res.status === 403) {
-      setValidAPI('Tài khoản hoặc mật khẩu không đúng');
+      setValidAPI('Email đã được sử dụng, vui lòng chuyển sang đăng nhập!');
     } else {
       setValidAPI('Lỗi hệ thống, vui lòng liên hệ quản trị viên');
     }
@@ -101,8 +115,8 @@ export default function Register() {
                   required
                   fullWidth
                   id='firstName'
-                  onChange={(e) => setFirstName(e.target.value)}
-                  label='Họ và tên đệm'
+                  onChange={(e) => setLastName(e.target.value)}
+                  label='Họ và tên'
                   autoFocus
                 />
               </Grid>
@@ -111,9 +125,9 @@ export default function Register() {
                   required
                   fullWidth
                   id='lastName'
-                  label='Tên'
+                  label='Số điện thoại'
                   name='lastName'
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   autoComplete='family-name'
                 />
               </Grid>
@@ -129,16 +143,27 @@ export default function Register() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name='password'
-                  label='Mật khẩu'
-                  type='password'
-                  id='password'
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete='new-password'
-                />
+                <FormControl sx={{ mt: 1, width: '100%' }} variant='outlined'>
+                  <InputLabel htmlFor='outlined-adornment-password'>
+                    Mật khẩu
+                  </InputLabel>
+                  <OutlinedInput
+                    id='outlined-adornment-password'
+                    type={hidePass ? 'text' : 'password'}
+                    onChange={(e) => setPassword(e.target.value)}
+                    endAdornment={
+                      <InputAdornment position='end'>
+                        <IconButton
+                          onClick={() => setHidePass(!hidePass)}
+                          edge='end'
+                        >
+                          {hidePass ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label='Mat Khau'
+                  />
+                </FormControl>
               </Grid>
             </Grid>
             {validAPI && (
@@ -164,6 +189,20 @@ export default function Register() {
           </Box>
         </Box>
       </Container>
+      <Slide direction='left' in={alert} mountOnEnter unmountOnExit>
+        <Alert
+          sx={{ position: 'fixed', top: 100, right: 20 }}
+          onClose={() => setAlert(false)}
+          severity='success'
+        >
+          <span
+            style={{ fontSize: 18, lineHeight: 1.1 }}
+            className='p__cormorant'
+          >
+            <p>Đăng ký thành công, bạn có thể chuyển sang đăng nhập!</p>
+          </span>
+        </Alert>
+      </Slide>
     </Box>
   );
 }
